@@ -5,9 +5,12 @@
   "description": "A lightweight desktop wrapper for Messenger.",
   "main": "src/main.js",
   "homepage": "https://github.com/Nomsodd13/Messengy",
-  "author": { "name": "Nomsodd", "email": "nomsodd@example.com" },
+  "author": {
+    "name": "Nomsodd",
+    "email": "nomsodd@example.com"
+  },
   "license": "MIT",
-  {
+
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
@@ -17,8 +20,8 @@
     "dist:win:x64": "electron-builder --win --x64",
     "dist:win:arm64": "electron-builder --win --arm64",
     "dist:linux": "electron-builder --linux"
-  }
-}
+  },
+
   "dependencies": {
     "electron-updater": "^6.6.2",
     "keytar": "^7.9.0"
@@ -27,6 +30,7 @@
     "electron": "^31.0.0",
     "electron-builder": "^26.0.12"
   },
+
   "build": {
     "appId": "com.nomsodd.messengy",
     "productName": "Messengy",
@@ -63,7 +67,11 @@
     },
 
     "publish": [
-      { "provider": "github", "owner": "Nomsodd13", "repo": "Messengy" }
+      {
+        "provider": "github",
+        "owner": "Nomsodd13",
+        "repo": "Messengy"
+      }
     ]
   }
 }
