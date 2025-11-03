@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 permissions:
-  contents: write   # 👈 สำคัญมาก ไม่งั้นสร้าง Release ไม่ได้
+  contents: write  
 
 jobs:
   build:
@@ -28,8 +28,8 @@ jobs:
 
       - name: Build and Publish (electron-builder)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # 👈 ให้สิทธิ์อัปโหลด
-          ELECTRON_BUILDER_VERBOSE: true          # 👈 ให้ log ละเอียด
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+          ELECTRON_BUILDER_VERBOSE: true        
         shell: bash
         run: |
           echo "RUNNER_OS=$RUNNER_OS"
@@ -37,7 +37,7 @@ jobs:
           if [[ "$RUNNER_OS" == "macOS" ]]; then
             yarn dist:mac --publish always
           elif [[ "$RUNNER_OS" == "Windows" ]]; then
-            # จะได้ทั้ง x64 + arm64 ตาม package.json
+             x64 + arm64 follow by package.json i guess
             yarn dist:win --publish always
           else
             yarn dist:linux --publish always
