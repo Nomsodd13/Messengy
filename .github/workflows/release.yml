@@ -5,51 +5,40 @@ on:
     tags:
       - "v*.*.*"
 
+permissions:
+  contents: write   # 👈 สำคัญมาก ไม่งั้นสร้าง Release ไม่ได้
+
 jobs:
   build:
-    name: build (${{ matrix.os }} - ${{ matrix.arch }})
-    runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
-        include:
-          # macOS (ออก arm64)
-          - os: macos-14
-            arch: arm64
-            build_cmd: yarn dist:mac --publish always
-
-          # Windows (ออกทั้ง x64 และ arm64)
-          - os: windows-latest
-            arch: x64
-            build_cmd: yarn dist:win:x64 --publish always
-          - os: windows-latest
-            arch: arm64
-            build_cmd: yarn dist:win:arm64 --publish always
-
-          # Linux (runner x64 สร้าง AppImage/deb x64)
-          - os: ubuntu-22.04
-            arch: x64
-            build_cmd: yarn dist:linux --publish always
+        os: [macos-14, windows-latest, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "yarn"
+          cache: 'yarn'
 
-      - name: Install deps
-        run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile || yarn install
 
-      # ปิด code signing อัตโนมัติ เพื่อกัน error บน CI (ยังไม่ได้เซ็น)
-      - name: Build & Publish
-        run: ${{ matrix.build_cmd }}
-        shell: bash
+      - name: Build and Publish (electron-builder)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # 👈 ให้สิทธิ์อัปโหลด
+          ELECTRON_BUILDER_VERBOSE: true          # 👈 ให้ log ละเอียด
+        shell: bash
+        run: |
+          echo "RUNNER_OS=$RUNNER_OS"
+          npx electron-builder --version
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            yarn dist:mac --publish always
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            # จะได้ทั้ง x64 + arm64 ตาม package.json
+            yarn dist:win --publish always
+          else
+            yarn dist:linux --publish always
+          fi
