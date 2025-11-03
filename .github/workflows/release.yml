@@ -3,39 +3,33 @@ name: Build & Release
 on:
   push:
     tags:
-      - "v*.*.*"   # รันอัตโนมัติเมื่อ push tag เช่น v0.1.1
+      - "v*.*.*"
 
 jobs:
-  build-macos:
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - run: yarn install --frozen-lockfile
-      - run: yarn dist:mac --publish always
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    strategy:
+      matrix:
+        os: [macos-14, windows-latest, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
 
-  build-windows:
-    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - run: yarn install --frozen-lockfile
-      # สร้างทั้ง x64 และ ARM64
-      - run: yarn dist:win -- -p always
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          node-version: 20
 
-  build-linux:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "20" }
-      - run: yarn install --frozen-lockfile
-      - run: yarn dist:linux --publish always
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build and Publish
+        run: |
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            yarn dist:mac --publish always
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            yarn dist:win --publish always
+          else
+            yarn dist:linux --publish always
+          fi
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
