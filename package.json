@@ -7,13 +7,18 @@
   "homepage": "https://github.com/Nomsodd13/Messengy",
   "author": { "name": "Nomsodd", "email": "nomsodd@example.com" },
   "license": "MIT",
+  {
   "scripts": {
     "start": "electron .",
+    "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist:mac": "electron-builder --mac",
     "dist:win": "electron-builder --win",
+    "dist:win:x64": "electron-builder --win --x64",
+    "dist:win:arm64": "electron-builder --win --arm64",
     "dist:linux": "electron-builder --linux"
-  },
+  }
+}
   "dependencies": {
     "electron-updater": "^6.6.2",
     "keytar": "^7.9.0"

@@ -7,29 +7,49 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [macos-14, windows-latest, ubuntu-22.04]
+    name: build (${{ matrix.os }} - ${{ matrix.arch }})
     runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS (ออก arm64)
+          - os: macos-14
+            arch: arm64
+            build_cmd: yarn dist:mac --publish always
+
+          # Windows (ออกทั้ง x64 และ arm64)
+          - os: windows-latest
+            arch: x64
+            build_cmd: yarn dist:win:x64 --publish always
+          - os: windows-latest
+            arch: arm64
+            build_cmd: yarn dist:win:arm64 --publish always
+
+          # Linux (runner x64 สร้าง AppImage/deb x64)
+          - os: ubuntu-22.04
+            arch: x64
+            build_cmd: yarn dist:linux --publish always
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "yarn"
 
-      - name: Install dependencies
+      - name: Install deps
         run: yarn install --frozen-lockfile
 
-      - name: Build and Publish
-        run: |
-          if [[ "$RUNNER_OS" == "macOS" ]]; then
-            yarn dist:mac --publish always
-          elif [[ "$RUNNER_OS" == "Windows" ]]; then
-            yarn dist:win --publish always
-          else
-            yarn dist:linux --publish always
-          fi
+      # ปิด code signing อัตโนมัติ เพื่อกัน error บน CI (ยังไม่ได้เซ็น)
+      - name: Build & Publish
+        run: ${{ matrix.build_cmd }}
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
