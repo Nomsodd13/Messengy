@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(20px);
+      font-family: -apple-system, BlinkMacSystemFont;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      height: 100%;
+    }
+    button {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      margin: 8px;
+      color: #fff;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    button.accept { background: rgba(0,200,0,0.4); }
+    button.decline { background: rgba(200,0,0,0.4); }
+  </style>
+</head>
+<body>
+  <h3 id="caller">Incoming call...</h3>
+  <div>
+    <button class="accept" onclick="action('accept')">Accept</button>
+    <button class="decline" onclick="action('decline')">Decline</button>
+  </div>
+  <script>
+    const { ipcRenderer } = require('electron');
+    ipcRenderer.on('caller-info', (_, data) => {
+      document.getElementById('caller').textContent = `${data.name} is calling...`;
+    });
+    function action(type) {
+      ipcRenderer.send('call-action', type);
+      window.close();
+    }
+  </script>
+</body>
+</html>

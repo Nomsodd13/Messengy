@@ -1,0 +1,63 @@
+/* -------------------------------
+   LIQUID GLASS TITLE BAR — stable build
+---------------------------------*/
+
+/* โปร่งใสและกัน scroll ซ้อน */
+html, body {
+  background: transparent !important;
+  overflow-x: hidden !important;
+}
+
+/* ดันเฉพาะ container หลัก ไม่กระทบ overlay */
+#mount_0_0 > div:first-child,
+[role="presentation"]:has([role="main"]),
+div[role="main"] {
+  padding-top: 52px !important;
+  box-sizing: border-box !important;
+}
+
+/* liquid glass titlebar */
+.mg-titlebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 52px;
+  -webkit-app-region: drag;
+  z-index: 2147483647;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.25) 0%,
+    rgba(255,255,255,0.14) 55%,
+    rgba(255,255,255,0.08) 100%
+  );
+  backdrop-filter: blur(36px) saturate(250%);
+  -webkit-backdrop-filter: blur(36px) saturate(250%);
+  border-bottom: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ตัวอักษรตรงกลาง */
+.mg-titlebar .mg-title {
+  -webkit-app-region: no-drag;
+  font: 13px -apple-system, BlinkMacSystemFont, 'SF Pro Text';
+  font-weight: 500;
+  color: rgba(20,20,20,0.75);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+  user-select: none;
+  letter-spacing: 0.3px;
+}
+
+/* เอฟเฟกต์แสงสะท้อน */
+.mg-titlebar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px 12px 0 0;
+  background: radial-gradient(ellipse at top, rgba(255,255,255,0.25), transparent 70%);
+  pointer-events: none;
+}
