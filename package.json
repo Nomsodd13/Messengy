@@ -1,24 +1,19 @@
 {
   "name": "messengy",
   "productName": "Messengy",
-  "version": "0.1.0",
-  "description": "A lightweight desktop wrapper for Messenger with Liquid Glass UI and system integration.",
-  "homepage": "https://github.com/nomsodd/messengy",
-  "author": {
-    "name": "Nomsodd",
-    "email": "nomsodd@example.com"
-  },
+  "version": "0.1.1",
+  "description": "A lightweight desktop wrapper for Messenger.",
   "main": "src/main.js",
+  "homepage": "https://github.com/Nomsodd13/Messengy",
+  "author": { "name": "Nomsodd", "email": "nomsodd@example.com" },
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist:mac": "electron-builder --mac",
-    "dist:win64": "electron-builder --win --x64",
-    "dist:linux": "electron-builder --linux",
-    "release": "yarn dist:mac && yarn dist:win64 && yarn dist:linux"
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux"
   },
-  "license": "MIT",
   "dependencies": {
     "electron-updater": "^6.6.2",
     "keytar": "^7.9.0"
@@ -31,39 +26,39 @@
     "appId": "com.nomsodd.messengy",
     "productName": "Messengy",
     "asar": true,
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "nomsodd",
-        "repo": "messengy"
-      }
-    ],
+
     "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ],
+      "target": ["dmg", "zip"],
       "icon": "assets/icon.icns",
-      "category": "public.app-category.social-networking"
+      "category": "public.app-category.social-networking",
+      "artifactName": "Messengy-${version}-mac-${arch}.${ext}"
     },
+
     "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
-    },
-    "linux": {
+      "icon": "assets/icon.ico",
       "target": [
-        "AppImage",
-        "deb"
+        { "target": "nsis", "arch": ["x64", "arm64"] }
       ],
-      "icon": "assets/linux-icons",
-      "maintainer": "Nomsodd <nomsodd@example.com>",
-      "category": "Network;Chat"
+      "artifactName": "Messengy-${version}-win-${arch}.${ext}"
     },
+
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "assets/linux-icons",
+      "category": "Network;Chat",
+      "maintainer": "Nomsodd <nomsodd@example.com>",
+      "artifactName": "Messengy-${version}-linux-${arch}.${ext}"
+    },
+
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
-    }
+    },
+
+    "publish": [
+      { "provider": "github", "owner": "Nomsodd13", "repo": "Messengy" }
+    ]
   }
 }
