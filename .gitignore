@@ -2,4 +2,9 @@ node_modules/
 dist/
 out/
 *.log
+*.dmg
+*.zip
+*.exe
+*.AppImage
+*.deb
 .DS_Store
